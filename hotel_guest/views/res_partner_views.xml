@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Partner form: Hotel Guest tab + smart button -->
+    <record id="view_partner_form_hotel_guest" model="ir.ui.view">
+        <field name="name">res.partner.form.hotel.guest</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_hotel_reservations" type="object"
+                        class="oe_stat_button" icon="fa-calendar-check-o"
+                        invisible="not is_guest"
+                        groups="hotel_core.group_hotel_user">
+                    <field name="guest_reservation_count" widget="statinfo"
+                           string="Reservations"/>
+                </button>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <widget name="web_ribbon" title="Blacklisted" bg_color="text-bg-danger"
+                        invisible="not guest_blacklisted"/>
+            </xpath>
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page string="Hotel Guest" name="hotel_guest"
+                      groups="hotel_core.group_hotel_user">
+                    <group>
+                        <field name="is_guest"/>
+                    </group>
+                    <group invisible="not is_guest">
+                        <group string="Identity">
+                            <field name="guest_id_type"/>
+                            <field name="guest_id_number"/>
+                            <field name="guest_nationality_id"/>
+                            <field name="guest_gender"/>
+                            <field name="guest_birthdate"/>
+                        </group>
+                        <group string="Loyalty &amp; History">
+                            <field name="guest_vip"/>
+                            <field name="guest_stay_count"/>
+                            <field name="guest_total_spent"/>
+                            <field name="guest_currency_id" invisible="1"/>
+                            <field name="guest_last_stay"/>
+                        </group>
+                    </group>
+                    <group string="Preferences" invisible="not is_guest">
+                        <field name="guest_preferences" nolabel="1"/>
+                    </group>
+                    <group string="Blacklist" invisible="not is_guest"
+                           groups="hotel_core.group_hotel_manager">
+                        <field name="guest_blacklisted"/>
+                        <field name="guest_blacklist_reason"
+                               invisible="not guest_blacklisted"
+                               required="guest_blacklisted"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search filters -->
+    <record id="view_partner_search_hotel_guest" model="ir.ui.view">
+        <field name="name">res.partner.search.hotel.guest</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="hotel_guests" string="Hotel Guests"
+                        domain="[('is_guest', '=', True)]"/>
+                <filter name="hotel_vip" string="VIP Guests"
+                        domain="[('guest_vip', 'in', ('silver', 'gold', 'platinum'))]"/>
+                <filter name="hotel_blacklisted" string="Blacklisted Guests"
+                        domain="[('guest_blacklisted', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Dedicated guest list -->
+    <record id="view_hotel_guest_list" model="ir.ui.view">
+        <field name="name">hotel.guest.list</field>
+        <field name="model">res.partner</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="guest_blacklisted">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="guest_nationality_id"/>
+                <field name="guest_id_type"/>
+                <field name="guest_id_number"/>
+                <field name="guest_vip" widget="badge"/>
+                <field name="guest_stay_count"/>
+                <field name="guest_total_spent"/>
+                <field name="guest_currency_id" column_invisible="1"/>
+                <field name="guest_blacklisted" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hotel_guest" model="ir.actions.act_window">
+        <field name="name">Guests</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_guest', '=', True)]</field>
+        <field name="context">{'default_is_guest': True}</field>
+    </record>
+
+    <record id="action_hotel_guest_list_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_hotel_guest_list"/>
+        <field name="act_window_id" ref="action_hotel_guest"/>
+    </record>
+</odoo>

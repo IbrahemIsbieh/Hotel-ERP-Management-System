@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hotel_occupancy_report_accountant,hotel.occupancy.report accountant,model_hotel_occupancy_report,hotel_finance.group_hotel_accountant,1,0,0,0
+access_hotel_occupancy_report_manager,hotel.occupancy.report manager,model_hotel_occupancy_report,hotel_core.group_hotel_manager,1,0,0,0

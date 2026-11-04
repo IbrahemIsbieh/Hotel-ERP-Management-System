@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_room_form_housekeeping" model="ir.ui.view">
+        <field name="name">hotel.room.form.housekeeping</field>
+        <field name="model">hotel.room</field>
+        <field name="inherit_id" ref="hotel_core.view_hotel_room_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_set_available']" position="before">
+                <button name="action_request_cleaning" type="object" string="Request Cleaning"
+                        invisible="state in ('cleaning', 'occupied')"/>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_tasks" type="object"
+                            class="oe_stat_button" icon="fa-eraser">
+                        <field name="open_task_count" widget="statinfo" string="Open Tasks"/>
+                    </button>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

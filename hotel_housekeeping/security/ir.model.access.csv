@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hk_task_housekeeper,hk.task housekeeper,model_hotel_housekeeping_task,group_housekeeper,1,1,0,0
+access_hk_task_user,hk.task user,model_hotel_housekeeping_task,hotel_core.group_hotel_user,1,1,1,0
+access_hk_task_manager,hk.task manager,model_hotel_housekeeping_task,hotel_core.group_hotel_manager,1,1,1,1
+access_hk_task_line_housekeeper,hk.task.line housekeeper,model_hotel_housekeeping_task_line,group_housekeeper,1,1,0,0
+access_hk_task_line_user,hk.task.line user,model_hotel_housekeeping_task_line,hotel_core.group_hotel_user,1,1,1,1
+access_hk_task_line_manager,hk.task.line manager,model_hotel_housekeeping_task_line,hotel_core.group_hotel_manager,1,1,1,1
+access_hk_item_housekeeper,hk.item housekeeper,model_hotel_housekeeping_item,group_housekeeper,1,0,0,0
+access_hk_item_user,hk.item user,model_hotel_housekeeping_item,hotel_core.group_hotel_user,1,0,0,0
+access_hk_item_manager,hk.item manager,model_hotel_housekeeping_item,hotel_core.group_hotel_manager,1,1,1,1
+access_hk_room_housekeeper,hotel.room housekeeper,hotel_core.model_hotel_room,group_housekeeper,1,0,0,0
+access_hk_hotel_housekeeper,hotel.hotel housekeeper,hotel_core.model_hotel_hotel,group_housekeeper,1,0,0,0
+access_hk_floor_housekeeper,hotel.floor housekeeper,hotel_core.model_hotel_floor,group_housekeeper,1,0,0,0
+access_hk_room_type_housekeeper,hotel.room.type housekeeper,hotel_core.model_hotel_room_type,group_housekeeper,1,0,0,0

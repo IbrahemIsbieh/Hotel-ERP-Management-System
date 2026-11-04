@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hotel_expense_accountant,hotel.expense accountant,model_hotel_expense,group_hotel_accountant,1,1,1,1
+access_hotel_expense_manager,hotel.expense manager,model_hotel_expense,hotel_core.group_hotel_manager,1,1,1,1
+access_hotel_profit_report_accountant,hotel.profit.report accountant,model_hotel_profit_report,group_hotel_accountant,1,0,0,0
+access_hotel_profit_report_manager,hotel.profit.report manager,model_hotel_profit_report,hotel_core.group_hotel_manager,1,0,0,0

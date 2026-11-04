@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hotel_restaurant_root" name="Restaurant"
+              parent="hotel_core.menu_hotel_root" sequence="9"
+              groups="group_restaurant_user"/>
+    <menuitem id="menu_hotel_restaurant_order" name="Orders"
+              parent="menu_hotel_restaurant_root"
+              action="action_hotel_restaurant_order" sequence="10"/>
+    <menuitem id="menu_hotel_kitchen" name="Kitchen Board"
+              parent="menu_hotel_restaurant_root"
+              action="action_hotel_kitchen" sequence="20"/>
+
+    <menuitem id="menu_hotel_restaurant" name="Restaurants"
+              parent="hotel_core.menu_hotel_config"
+              action="action_hotel_restaurant" sequence="70"/>
+    <menuitem id="menu_hotel_menu_category" name="Menu Categories"
+              parent="hotel_core.menu_hotel_config"
+              action="action_hotel_menu_category" sequence="71"/>
+    <menuitem id="menu_hotel_menu_item" name="Menu Items"
+              parent="hotel_core.menu_hotel_config"
+              action="action_hotel_menu_item" sequence="72"/>
+</odoo>

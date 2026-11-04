@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_reservation_form_frontdesk" model="ir.ui.view">
+        <field name="name">hotel.reservation.form.frontdesk</field>
+        <field name="model">hotel.reservation</field>
+        <field name="inherit_id" ref="hotel_reservation.view_hotel_reservation_form"/>
+        <field name="arch" type="xml">
+            <!-- Buttons -->
+            <xpath expr="//button[@name='action_confirm']" position="after">
+                <button name="action_check_in" type="object" string="Check-in"
+                        class="btn-primary" invisible="state != 'confirmed'"/>
+                <button name="action_check_out" type="object" string="Check-out"
+                        class="btn-primary" invisible="state != 'checked_in'"/>
+                <button name="action_receive_deposit" type="object" string="Receive Deposit"
+                        invisible="state not in ('confirmed', 'checked_in') or deposit_state != 'none' or deposit_amount &lt;= 0"/>
+                <button name="action_refund_deposit" type="object" string="Refund Deposit"
+                        invisible="deposit_state != 'held'"/>
+                <button name="action_apply_deposit" type="object" string="Apply Deposit to Bill"
+                        invisible="deposit_state != 'held'"/>
+            </xpath>
+
+            <!-- Invoice smart button -->
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_invoice" type="object"
+                            class="oe_stat_button" icon="fa-file-text-o"
+                            invisible="not invoice_id"
+                            groups="account.group_account_invoice">
+                        <div class="o_stat_info">
+                            <span class="o_stat_text">Invoice</span>
+                        </div>
+                    </button>
+                </div>
+            </xpath>
+
+            <!-- Stay & deposit block -->
+            <xpath expr="//notebook" position="before">
+                <group string="Stay &amp; Deposit">
+                    <group>
+                        <field name="actual_checkin"/>
+                        <field name="actual_checkout"/>
+                        <field name="invoice_id" invisible="1"/>
+                    </group>
+                    <group>
+                        <field name="deposit_amount" readonly="deposit_state != 'none'"/>
+                        <field name="deposit_state"/>
+                        <field name="charges_total"/>
+                        <field name="grand_total"/>
+                        <field name="balance_due" class="fw-bold"/>
+                    </group>
+                </group>
+            </xpath>
+
+            <!-- Extra charges page -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Extra Charges">
+                    <field name="charge_ids" readonly="state != 'checked_in'">
+                        <list editable="bottom">
+                            <field name="date"/>
+                            <field name="product_id"/>
+                            <field name="name"/>
+                            <field name="quantity"/>
+                            <field name="price_unit"/>
+                            <field name="subtotal" sum="Total"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

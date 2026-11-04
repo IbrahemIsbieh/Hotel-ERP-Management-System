@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_employee_form_hotel" model="ir.ui.view">
+        <field name="name">hr.employee.form.hotel</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_shifts" type="object" class="oe_stat_button"
+                        icon="fa-clock-o" invisible="not hotel_id"
+                        groups="hotel_core.group_hotel_user">
+                    <field name="shift_count" widget="statinfo" string="Shifts"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Hotel" name="hotel_staff" groups="hotel_core.group_hotel_user">
+                    <group>
+                        <group>
+                            <field name="hotel_id"/>
+                            <field name="hotel_department"/>
+                            <field name="hotel_role_id"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

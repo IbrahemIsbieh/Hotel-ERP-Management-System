@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Hotel -->
+    <record id="view_hotel_hotel_list" model="ir.ui.view">
+        <field name="name">hotel.hotel.list</field>
+        <field name="model">hotel.hotel</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="city"/>
+                <field name="star_rating"/>
+                <field name="building_count"/>
+                <field name="room_count"/>
+                <field name="total_capacity"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hotel_hotel_form" model="ir.ui.view">
+        <field name="name">hotel.hotel.form</field>
+        <field name="model">hotel.hotel</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_rooms" type="object"
+                                class="oe_stat_button" icon="fa-bed">
+                            <field name="room_count" widget="statinfo" string="Rooms"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Hotel name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="star_rating" widget="priority"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="check_in_time" widget="float_time"/>
+                            <field name="check_out_time" widget="float_time"/>
+                            <field name="total_capacity"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Contact">
+                            <group>
+                                <field name="street"/>
+                                <field name="city"/>
+                                <field name="country_id"/>
+                                <field name="phone" widget="phone"/>
+                                <field name="email" widget="email"/>
+                            </group>
+                        </page>
+                        <page string="Buildings">
+                            <field name="building_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Building -->
+    <record id="view_hotel_building_list" model="ir.ui.view">
+        <field name="name">hotel.building.list</field>
+        <field name="model">hotel.building</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="hotel_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hotel_building_form" model="ir.ui.view">
+        <field name="name">hotel.building.form</field>
+        <field name="model">hotel.building</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="hotel_id"/>
+                    </group>
+                    <field name="floor_ids">
+                        <list editable="bottom">
+                            <field name="number"/>
+                            <field name="name"/>
+                        </list>
+                    </field>
+                    <field name="notes" placeholder="Notes..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Floor -->
+    <record id="view_hotel_floor_list" model="ir.ui.view">
+        <field name="name">hotel.floor.list</field>
+        <field name="model">hotel.floor</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="building_id"/>
+                <field name="number"/>
+                <field name="name"/>
+                <field name="hotel_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Amenity -->
+    <record id="view_hotel_amenity_list" model="ir.ui.view">
+        <field name="name">hotel.amenity.list</field>
+        <field name="model">hotel.amenity</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/>
+                <field name="icon"/>
+            </list>
+        </field>
+    </record>
+</odoo>

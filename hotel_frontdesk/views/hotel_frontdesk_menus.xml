@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_hotel_arrivals" model="ir.actions.act_window">
+        <field name="name">Arrivals Today</field>
+        <field name="res_model">hotel.reservation</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_confirmed': 1, 'search_default_arrivals_today': 1}</field>
+    </record>
+
+    <record id="action_hotel_in_house" model="ir.actions.act_window">
+        <field name="name">In-House Guests</field>
+        <field name="res_model">hotel.reservation</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_checked_in': 1}</field>
+    </record>
+
+    <record id="action_hotel_departures" model="ir.actions.act_window">
+        <field name="name">Departures Today</field>
+        <field name="res_model">hotel.reservation</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_checked_in': 1, 'search_default_departures_today': 1}</field>
+    </record>
+
+    <menuitem id="menu_hotel_frontdesk_root" name="Front Desk"
+              parent="hotel_core.menu_hotel_root" sequence="6"
+              groups="hotel_core.group_hotel_user"/>
+    <menuitem id="menu_hotel_arrivals" name="Arrivals Today"
+              parent="menu_hotel_frontdesk_root" action="action_hotel_arrivals" sequence="10"/>
+    <menuitem id="menu_hotel_in_house" name="In-House Guests"
+              parent="menu_hotel_frontdesk_root" action="action_hotel_in_house" sequence="20"/>
+    <menuitem id="menu_hotel_departures" name="Departures Today"
+              parent="menu_hotel_frontdesk_root" action="action_hotel_departures" sequence="30"/>
+</odoo>

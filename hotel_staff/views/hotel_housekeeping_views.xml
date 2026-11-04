@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hk_task_form_staff" model="ir.ui.view">
+        <field name="name">hotel.housekeeping.task.form.staff</field>
+        <field name="model">hotel.housekeeping.task</field>
+        <field name="inherit_id" ref="hotel_housekeeping.view_hk_task_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_start']" position="before">
+                <button name="action_auto_assign" type="object" string="Auto Assign"
+                        invisible="state != 'pending'"
+                        groups="hotel_housekeeping.group_housekeeping_supervisor"/>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <field name="assignee_on_shift" invisible="1"/>
+                <div class="alert alert-warning" role="alert"
+                     invisible="not assigned_user_id or assignee_on_shift or state not in ('pending', 'in_progress')">
+                    The assigned employee is not on shift on the scheduled date.
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

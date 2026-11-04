@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hk_root" name="Housekeeping"
+              parent="hotel_core.menu_hotel_root" sequence="8"
+              groups="group_housekeeper"/>
+    <menuitem id="menu_hk_task" name="Tasks" parent="menu_hk_root"
+              action="action_hk_task" sequence="10"/>
+
+    <menuitem id="menu_hk_item" name="Cleaning Checklist"
+              parent="hotel_core.menu_hotel_config"
+              action="action_hk_item" sequence="60"/>
+</odoo>

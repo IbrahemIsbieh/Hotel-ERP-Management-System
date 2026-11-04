@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hotel_finance_root" name="Finance"
+              parent="hotel_core.menu_hotel_root" sequence="20"
+              groups="group_hotel_accountant"/>
+    <menuitem id="menu_hotel_expense" name="Expenses"
+              parent="menu_hotel_finance_root"
+              action="action_hotel_expense" sequence="10"/>
+    <menuitem id="menu_hotel_profit_report" name="Profitability"
+              parent="menu_hotel_finance_root"
+              action="action_hotel_profit_report" sequence="20"/>
+</odoo>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_reservation_form_guest" model="ir.ui.view">
+        <field name="name">hotel.reservation.form.guest</field>
+        <field name="model">hotel.reservation</field>
+        <field name="inherit_id" ref="hotel_reservation.view_hotel_reservation_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="attributes">
+                <attribute name="context">{'default_is_guest': True}</attribute>
+            </field>
+            <field name="partner_id" position="after">
+                <field name="guest_vip"/>
+            </field>
+            <xpath expr="//notebook" position="inside">
+                <page string="Companions">
+                    <field name="companion_ids" readonly="state in ('checked_out', 'cancelled')">
+                        <list editable="bottom">
+                            <field name="name"/>
+                            <field name="gender"/>
+                            <field name="nationality_id"/>
+                            <field name="id_type"/>
+                            <field name="id_number"/>
+                            <field name="is_child"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

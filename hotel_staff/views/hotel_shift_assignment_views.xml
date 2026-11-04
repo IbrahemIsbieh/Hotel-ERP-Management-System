@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_shift_assignment_list" model="ir.ui.view">
+        <field name="name">hotel.shift.assignment.list</field>
+        <field name="model">hotel.shift.assignment</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'absent'" decoration-muted="state == 'done'">
+                <field name="date"/>
+                <field name="employee_id"/>
+                <field name="department"/>
+                <field name="shift_id"/>
+                <field name="hotel_id"/>
+                <field name="responsibilities" optional="hide"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hotel_shift_assignment_form" model="ir.ui.view">
+        <field name="name">hotel.shift.assignment.form</field>
+        <field name="model">hotel.shift.assignment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm"
+                            class="btn-primary" invisible="state != 'planned'"/>
+                    <button name="action_done" type="object" string="Mark Done"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_absent" type="object" string="Mark Absent"
+                            invisible="state not in ('planned', 'confirmed')"/>
+                    <button name="action_reset" type="object" string="Reset to Planned"
+                            invisible="state not in ('absent', 'confirmed')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="planned,confirmed,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="hotel_id"/>
+                            <field name="employee_id"/>
+                            <field name="department"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="shift_id"/>
+                        </group>
+                    </group>
+                    <field name="responsibilities" placeholder="Responsibilities for this shift..."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hotel_shift_assignment_calendar" model="ir.ui.view">
+        <field name="name">hotel.shift.assignment.calendar</field>
+        <field name="model">hotel.shift.assignment</field>
+        <field name="arch" type="xml">
+            <calendar string="Schedule" date_start="date" color="shift_id" mode="week">
+                <field name="employee_id"/>
+                <field name="shift_id"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_hotel_shift_assignment_pivot" model="ir.ui.view">
+        <field name="name">hotel.shift.assignment.pivot</field>
+        <field name="model">hotel.shift.assignment</field>
+        <field name="arch" type="xml">
+            <pivot string="Weekly Schedule">
+                <field name="employee_id" type="row"/>
+                <field name="date" interval="day" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_hotel_shift_assignment_search" model="ir.ui.view">
+        <field name="name">hotel.shift.assignment.search</field>
+        <field name="model">hotel.shift.assignment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="shift_id"/>
+                <field name="hotel_id"/>
+                <filter name="today" string="Today"
+                        domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="absent" string="Absent" domain="[('state', '=', 'absent')]"/>
+                <group>
+                    <filter name="group_dept" string="Department"
+                            context="{'group_by': 'department'}"/>
+                    <filter name="group_shift" string="Shift" context="{'group_by': 'shift_id'}"/>
+                    <filter name="group_date" string="Day" context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hotel_shift_assignment" model="ir.actions.act_window">
+        <field name="name">Schedule</field>
+        <field name="res_model">hotel.shift.assignment</field>
+        <field name="view_mode">calendar,list,pivot,form</field>
+    </record>
+
+    <!-- Wizard -->
+    <record id="view_hotel_shift_generate_wizard_form" model="ir.ui.view">
+        <field name="name">hotel.shift.generate.wizard.form</field>
+        <field name="model">hotel.shift.generate.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="hotel_id"/>
+                        <field name="shift_id"/>
+                        <field name="employee_ids" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                </group>
+                <group string="Working days">
+                    <group>
+                        <field name="mon"/><field name="tue"/><field name="wed"/><field name="thu"/>
+                    </group>
+                    <group>
+                        <field name="fri"/><field name="sat"/><field name="sun"/>
+                    </group>
+                </group>
+                <field name="responsibilities" placeholder="Responsibilities (optional)..."/>
+                <footer>
+                    <button name="action_generate" type="object" string="Generate"
+                            class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hotel_shift_generate_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Schedule</field>
+        <field name="res_model">hotel.shift.generate.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

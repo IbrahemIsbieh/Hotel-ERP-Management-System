@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hotel_staff_root" name="Staff"
+              parent="hotel_core.menu_hotel_root" sequence="15"
+              groups="hotel_core.group_hotel_user"/>
+    <menuitem id="menu_hotel_staff" name="Employees" parent="menu_hotel_staff_root"
+              action="action_hotel_staff" sequence="10"/>
+    <menuitem id="menu_hotel_schedule" name="Schedule" parent="menu_hotel_staff_root"
+              action="action_hotel_shift_assignment" sequence="20"/>
+    <menuitem id="menu_hotel_generate_schedule" name="Generate Schedule"
+              parent="menu_hotel_staff_root" action="action_hotel_shift_generate_wizard"
+              sequence="30" groups="hotel_core.group_hotel_manager"/>
+
+    <menuitem id="menu_hotel_shift" name="Shifts" parent="hotel_core.menu_hotel_config"
+              action="action_hotel_shift" sequence="80"/>
+    <menuitem id="menu_hotel_staff_role" name="Staff Roles" parent="hotel_core.menu_hotel_config"
+              action="action_hotel_staff_role" sequence="81"/>
+</odoo>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_restaurant_order_list" model="ir.ui.view">
+        <field name="name">hotel.restaurant.order.list</field>
+        <field name="model">hotel.restaurant.order</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state in ('confirmed', 'preparing')"
+                  decoration-success="state == 'served'"
+                  decoration-muted="state in ('billed', 'cancelled')">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="restaurant_id"/>
+                <field name="order_type"/>
+                <field name="table_number" optional="show"/>
+                <field name="room_id" optional="show"/>
+                <field name="partner_id"/>
+                <field name="amount_total" sum="Total"/>
+                <field name="payment_method" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hotel_restaurant_order_form" model="ir.ui.view">
+        <field name="name">hotel.restaurant.order.form</field>
+        <field name="model">hotel.restaurant.order</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Send to Kitchen"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_prepare" type="object" string="Start Preparing"
+                            class="btn-primary" invisible="state != 'confirmed'"/>
+                    <button name="action_serve" type="object" string="Mark Served"
+                            class="btn-primary" invisible="state != 'preparing'"/>
+                    <button name="action_charge_to_room" type="object" string="Charge to Room"
+                            class="btn-primary"
+                            invisible="state != 'served' or not reservation_id"/>
+                    <button name="action_register_payment" type="object" string="Register Payment"
+                            invisible="state != 'served'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('billed', 'cancelled')"
+                            confirm="Cancel this order?"/>
+                    <button name="action_draft" type="object" string="Set to Draft"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,preparing,served,billed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="restaurant_id" readonly="state != 'draft'"/>
+                            <field name="hotel_id"/>
+                            <field name="order_type" readonly="state != 'draft'"/>
+                            <field name="table_number"
+                                   invisible="order_type != 'dine_in'"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="reservation_id"
+                                   readonly="state not in ('draft', 'confirmed')"
+                                   required="order_type == 'room_service'"/>
+                            <field name="reservation_room_ids" invisible="1"/>
+                            <field name="room_id" invisible="not reservation_id"
+                                   required="order_type == 'room_service'"
+                                   readonly="state not in ('draft', 'confirmed')"/>
+                            <field name="partner_id"/>
+                            <field name="payment_method"
+                                   invisible="state not in ('served', 'billed')"
+                                   readonly="state == 'billed'"/>
+                            <field name="charge_id" invisible="not charge_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Items">
+                            <field name="line_ids" readonly="state not in ('draft', 'confirmed')">
+                                <list editable="bottom">
+                                    <field name="item_id"
+                                           domain="[('available', '=', True), ('restaurant_ids', 'in', parent.restaurant_id)]"/>
+                                    <field name="name"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit"/>
+                                    <field name="notes"/>
+                                    <field name="subtotal" sum="Total"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="currency_id" invisible="1"/>
+                                <field name="amount_subtotal"/>
+                                <field name="amount_service"/>
+                                <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes" placeholder="Allergies, special requests..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kitchen board -->
+    <record id="view_hotel_restaurant_order_kanban" model="ir.ui.view">
+        <field name="name">hotel.restaurant.order.kanban</field>
+        <field name="model">hotel.restaurant.order</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" records_draggable="false" group_create="false">
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between">
+                            <field name="name" class="fw-bold"/>
+                            <field name="order_type" widget="badge"/>
+                        </div>
+                        <div>
+                            <field name="restaurant_id"/>
+                        </div>
+                        <div class="text-muted">
+                            <t t-if="record.room_id.raw_value">Room <field name="room_id"/></t>
+                            <t t-elif="record.table_number.raw_value">Table <field name="table_number"/></t>
+                        </div>
+                        <footer class="pt-2">
+                            <field name="date"/>
+                            <field name="amount_total" class="ms-auto"/>
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_hotel_restaurant_order_search" model="ir.ui.view">
+        <field name="name">hotel.restaurant.order.search</field>
+        <field name="model">hotel.restaurant.order</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="restaurant_id"/>
+                <field name="partner_id"/>
+                <field name="room_id"/>
+                <filter name="kitchen" string="In Kitchen"
+                        domain="[('state', 'in', ('confirmed', 'preparing'))]"/>
+                <filter name="to_bill" string="To Bill" domain="[('state', '=', 'served')]"/>
+                <filter name="room_service" string="Room Service"
+                        domain="[('order_type', '=', 'room_service')]"/>
+                <group>
+                    <filter name="group_restaurant" string="Restaurant"
+                            context="{'group_by': 'restaurant_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_day" string="Day" context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hotel_restaurant_order" model="ir.actions.act_window">
+        <field name="name">Orders</field>
+        <field name="res_model">hotel.restaurant.order</field>
+        <field name="view_mode">list,form,kanban</field>
+    </record>
+
+    <record id="action_hotel_kitchen" model="ir.actions.act_window">
+        <field name="name">Kitchen Board</field>
+        <field name="res_model">hotel.restaurant.order</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('state', 'in', ('confirmed', 'preparing', 'served'))]</field>
+    </record>
+</odoo>

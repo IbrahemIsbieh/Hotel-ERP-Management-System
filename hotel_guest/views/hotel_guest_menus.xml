@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hotel_guest" name="Guests"
+              parent="hotel_core.menu_hotel_root"
+              action="action_hotel_guest" sequence="7"
+              groups="hotel_core.group_hotel_user"/>
+</odoo>

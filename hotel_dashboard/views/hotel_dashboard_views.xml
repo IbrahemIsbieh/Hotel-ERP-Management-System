@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_hotel_dashboard" model="ir.actions.client">
+        <field name="name">Dashboard</field>
+        <field name="tag">hotel_dashboard</field>
+    </record>
+
+    <!-- Occupancy analysis -->
+    <record id="view_hotel_occupancy_report_pivot" model="ir.ui.view">
+        <field name="name">hotel.occupancy.report.pivot</field>
+        <field name="model">hotel.occupancy.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Occupancy">
+                <field name="hotel_id" type="row"/>
+                <field name="room_type_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="room_nights" type="measure"/>
+                <field name="night_rate" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_hotel_occupancy_report_graph" model="ir.ui.view">
+        <field name="name">hotel.occupancy.report.graph</field>
+        <field name="model">hotel.occupancy.report</field>
+        <field name="arch" type="xml">
+            <graph string="Room Nights" type="bar" stacked="1">
+                <field name="date" interval="week"/>
+                <field name="room_type_id"/>
+                <field name="room_nights" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_hotel_occupancy_report_list" model="ir.ui.view">
+        <field name="name">hotel.occupancy.report.list</field>
+        <field name="model">hotel.occupancy.report</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="hotel_id"/>
+                <field name="room_id"/>
+                <field name="room_type_id"/>
+                <field name="reservation_id"/>
+                <field name="state"/>
+                <field name="night_rate" sum="Revenue"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hotel_occupancy_report_search" model="ir.ui.view">
+        <field name="name">hotel.occupancy.report.search</field>
+        <field name="model">hotel.occupancy.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="hotel_id"/>
+                <field name="room_id"/>
+                <field name="room_type_id"/>
+                <field name="reservation_id"/>
+                <filter name="this_month" string="This Month"
+                        domain="[('date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+                <filter name="checked_out" string="Checked Out"
+                        domain="[('state', '=', 'checked_out')]"/>
+                <group>
+                    <filter name="group_hotel" string="Hotel" context="{'group_by': 'hotel_id'}"/>
+                    <filter name="group_type" string="Room Type"
+                            context="{'group_by': 'room_type_id'}"/>
+                    <filter name="group_month" string="Month" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hotel_occupancy_report" model="ir.actions.act_window">
+        <field name="name">Occupancy Analysis</field>
+        <field name="res_model">hotel.occupancy.report</field>
+        <field name="view_mode">pivot,graph,list</field>
+    </record>
+</odoo>

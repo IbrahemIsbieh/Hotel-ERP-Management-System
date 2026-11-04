@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_reservation_form_finance" model="ir.ui.view">
+        <field name="name">hotel.reservation.form.finance</field>
+        <field name="model">hotel.reservation</field>
+        <field name="inherit_id" ref="hotel_frontdesk.view_hotel_reservation_form_frontdesk"/>
+        <field name="arch" type="xml">
+            <field name="deposit_state" position="after">
+                <field name="deposit_journal_id"
+                       readonly="deposit_state != 'none'"
+                       groups="account.group_account_invoice"/>
+                <field name="deposit_payment_id" invisible="not deposit_payment_id"
+                       groups="account.group_account_invoice"/>
+                <field name="deposit_refund_payment_id"
+                       invisible="not deposit_refund_payment_id"
+                       groups="account.group_account_invoice"/>
+            </field>
+            <field name="balance_due" position="after">
+                <field name="invoice_payment_state" invisible="not invoice_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>

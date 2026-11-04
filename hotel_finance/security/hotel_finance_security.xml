@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_hotel_accountant" model="res.groups">
+        <field name="name">Hotel / Accountant</field>
+        <field name="implied_ids" eval="[(4, ref('hotel_core.group_hotel_user'))]"/>
+    </record>
+
+    <record id="hotel_core.group_hotel_manager" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('group_hotel_accountant'))]"/>
+    </record>
+</odoo>

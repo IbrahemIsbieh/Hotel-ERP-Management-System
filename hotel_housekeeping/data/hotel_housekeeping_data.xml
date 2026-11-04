@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_hotel_housekeeping_task" model="ir.sequence">
+        <field name="name">Housekeeping Task</field>
+        <field name="code">hotel.housekeeping.task</field>
+        <field name="prefix">HK/</field>
+        <field name="padding">5</field>
+    </record>
+
+    <!-- Default checklist -->
+    <record id="hk_item_1" model="hotel.housekeeping.item">
+        <field name="name">Change bed linen</field><field name="sequence">10</field>
+    </record>
+    <record id="hk_item_2" model="hotel.housekeeping.item">
+        <field name="name">Clean bathroom</field><field name="sequence">20</field>
+    </record>
+    <record id="hk_item_3" model="hotel.housekeeping.item">
+        <field name="name">Restock toiletries and towels</field><field name="sequence">30</field>
+    </record>
+    <record id="hk_item_4" model="hotel.housekeeping.item">
+        <field name="name">Vacuum and mop floor</field><field name="sequence">40</field>
+    </record>
+    <record id="hk_item_5" model="hotel.housekeeping.item">
+        <field name="name">Dust surfaces</field><field name="sequence">50</field>
+    </record>
+    <record id="hk_item_6" model="hotel.housekeeping.item">
+        <field name="name">Empty trash bins</field><field name="sequence">60</field>
+    </record>
+    <record id="hk_item_7" model="hotel.housekeeping.item">
+        <field name="name">Check minibar</field><field name="sequence">70</field>
+    </record>
+    <record id="hk_item_8" model="hotel.housekeeping.item">
+        <field name="name">Check lights, TV and A/C</field><field name="sequence">80</field>
+    </record>
+
+    <!-- Daily cleaning of occupied rooms -->
+    <record id="ir_cron_hotel_daily_cleaning" model="ir.cron">
+        <field name="name">Hotel: generate daily cleaning tasks</field>
+        <field name="model_id" ref="model_hotel_housekeeping_task"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_generate_daily_tasks()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

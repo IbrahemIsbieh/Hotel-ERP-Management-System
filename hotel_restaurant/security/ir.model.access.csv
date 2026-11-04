@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hotel_restaurant_user,hotel.restaurant user,model_hotel_restaurant,group_restaurant_user,1,0,0,0
+access_hotel_restaurant_manager,hotel.restaurant manager,model_hotel_restaurant,hotel_core.group_hotel_manager,1,1,1,1
+access_hotel_menu_category_user,hotel.menu.category user,model_hotel_menu_category,group_restaurant_user,1,0,0,0
+access_hotel_menu_category_manager,hotel.menu.category manager,model_hotel_menu_category,hotel_core.group_hotel_manager,1,1,1,1
+access_hotel_menu_item_user,hotel.menu.item user,model_hotel_menu_item,group_restaurant_user,1,0,0,0
+access_hotel_menu_item_manager,hotel.menu.item manager,model_hotel_menu_item,hotel_core.group_hotel_manager,1,1,1,1
+access_hotel_restaurant_order_user,hotel.restaurant.order user,model_hotel_restaurant_order,group_restaurant_user,1,1,1,0
+access_hotel_restaurant_order_manager,hotel.restaurant.order manager,model_hotel_restaurant_order,hotel_core.group_hotel_manager,1,1,1,1
+access_hotel_restaurant_order_line_user,hotel.restaurant.order.line user,model_hotel_restaurant_order_line,group_restaurant_user,1,1,1,1
+access_hotel_restaurant_order_line_manager,hotel.restaurant.order.line manager,model_hotel_restaurant_order_line,hotel_core.group_hotel_manager,1,1,1,1

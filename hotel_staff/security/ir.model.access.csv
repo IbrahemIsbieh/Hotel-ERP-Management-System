@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hotel_staff_role_user,hotel.staff.role user,model_hotel_staff_role,hotel_core.group_hotel_user,1,0,0,0
+access_hotel_staff_role_manager,hotel.staff.role manager,model_hotel_staff_role,hotel_core.group_hotel_manager,1,1,1,1
+access_hotel_shift_user,hotel.shift user,model_hotel_shift,hotel_core.group_hotel_user,1,0,0,0
+access_hotel_shift_manager,hotel.shift manager,model_hotel_shift,hotel_core.group_hotel_manager,1,1,1,1
+access_hotel_shift_assignment_user,hotel.shift.assignment user,model_hotel_shift_assignment,hotel_core.group_hotel_user,1,0,0,0
+access_hotel_shift_assignment_manager,hotel.shift.assignment manager,model_hotel_shift_assignment,hotel_core.group_hotel_manager,1,1,1,1

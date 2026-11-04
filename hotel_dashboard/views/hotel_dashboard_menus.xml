@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hotel_dashboard" name="Dashboard"
+              parent="hotel_core.menu_hotel_root"
+              action="action_hotel_dashboard" sequence="1"
+              groups="hotel_finance.group_hotel_accountant"/>
+
+    <menuitem id="menu_hotel_occupancy_report" name="Occupancy Analysis"
+              parent="hotel_finance.menu_hotel_finance_root"
+              action="action_hotel_occupancy_report" sequence="30"/>
+</odoo>

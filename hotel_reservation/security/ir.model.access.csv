@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hotel_season_user,hotel.season user,model_hotel_season,hotel_core.group_hotel_user,1,0,0,0
+access_hotel_season_manager,hotel.season manager,model_hotel_season,hotel_core.group_hotel_manager,1,1,1,1
+access_hotel_season_price_user,hotel.season.price user,model_hotel_season_price,hotel_core.group_hotel_user,1,0,0,0
+access_hotel_season_price_manager,hotel.season.price manager,model_hotel_season_price,hotel_core.group_hotel_manager,1,1,1,1
+access_hotel_reservation_user,hotel.reservation user,model_hotel_reservation,hotel_core.group_hotel_user,1,1,1,0
+access_hotel_reservation_manager,hotel.reservation manager,model_hotel_reservation,hotel_core.group_hotel_manager,1,1,1,1
+access_hotel_reservation_line_user,hotel.reservation.line user,model_hotel_reservation_line,hotel_core.group_hotel_user,1,1,1,1
+access_hotel_reservation_line_manager,hotel.reservation.line manager,model_hotel_reservation_line,hotel_core.group_hotel_manager,1,1,1,1

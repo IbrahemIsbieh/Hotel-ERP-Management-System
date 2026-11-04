@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Restaurant -->
+    <record id="view_hotel_restaurant_list" model="ir.ui.view">
+        <field name="name">hotel.restaurant.list</field>
+        <field name="model">hotel.restaurant</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="hotel_id"/>
+                <field name="restaurant_type"/>
+                <field name="opening_time" widget="float_time"/>
+                <field name="closing_time" widget="float_time"/>
+                <field name="service_charge_pct"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hotel_restaurant_form" model="ir.ui.view">
+        <field name="name">hotel.restaurant.form</field>
+        <field name="model">hotel.restaurant</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Restaurant name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="hotel_id"/>
+                            <field name="restaurant_type"/>
+                            <field name="service_charge_pct"/>
+                        </group>
+                        <group>
+                            <field name="opening_time" widget="float_time"/>
+                            <field name="closing_time" widget="float_time"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Menu">
+                            <field name="item_ids">
+                                <list>
+                                    <field name="category_id"/>
+                                    <field name="name"/>
+                                    <field name="price"/>
+                                    <field name="available" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Category -->
+    <record id="view_hotel_menu_category_list" model="ir.ui.view">
+        <field name="name">hotel.menu.category.list</field>
+        <field name="model">hotel.menu.category</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Menu item -->
+    <record id="view_hotel_menu_item_list" model="ir.ui.view">
+        <field name="name">hotel.menu.item.list</field>
+        <field name="model">hotel.menu.item</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="price"/>
+                <field name="restaurant_ids" widget="many2many_tags"/>
+                <field name="available" widget="boolean_toggle"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hotel_menu_item_form" model="ir.ui.view">
+        <field name="name">hotel.menu.item.form</field>
+        <field name="model">hotel.menu.item</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Grilled Chicken"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="category_id"/>
+                            <field name="price"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="available"/>
+                        </group>
+                        <group>
+                            <field name="restaurant_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Ingredients, allergens..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hotel_restaurant" model="ir.actions.act_window">
+        <field name="name">Restaurants</field>
+        <field name="res_model">hotel.restaurant</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_hotel_menu_category" model="ir.actions.act_window">
+        <field name="name">Menu Categories</field>
+        <field name="res_model">hotel.menu.category</field>
+        <field name="view_mode">list</field>
+    </record>
+    <record id="action_hotel_menu_item" model="ir.actions.act_window">
+        <field name="name">Menu Items</field>
+        <field name="res_model">hotel.menu.item</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_reservation_form_restaurant" model="ir.ui.view">
+        <field name="name">hotel.reservation.form.restaurant</field>
+        <field name="model">hotel.reservation</field>
+        <field name="inherit_id" ref="hotel_reservation.view_hotel_reservation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_restaurant_orders" type="object"
+                        class="oe_stat_button" icon="fa-cutlery"
+                        invisible="restaurant_order_count == 0"
+                        groups="hotel_restaurant.group_restaurant_user">
+                    <field name="restaurant_order_count" widget="statinfo" string="Orders"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

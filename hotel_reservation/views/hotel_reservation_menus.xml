@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hotel_reservation_root" name="Reservations"
+              parent="hotel_core.menu_hotel_root" sequence="5"/>
+    <menuitem id="menu_hotel_reservation" name="Reservations"
+              parent="menu_hotel_reservation_root"
+              action="action_hotel_reservation" sequence="10"/>
+
+    <menuitem id="menu_hotel_season" name="Seasons &amp; Prices"
+              parent="hotel_core.menu_hotel_config"
+              action="action_hotel_season" sequence="50"/>
+</odoo>

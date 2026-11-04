@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hotel_reservation_portal,hotel.reservation portal,hotel_reservation.model_hotel_reservation,base.group_portal,1,0,0,0
+access_hotel_hotel_portal,hotel.hotel portal,hotel_core.model_hotel_hotel,base.group_portal,1,0,0,0
+access_hotel_service_request_portal,hotel.service.request portal,model_hotel_service_request,base.group_portal,1,0,0,0
+access_hotel_service_request_user,hotel.service.request user,model_hotel_service_request,hotel_core.group_hotel_user,1,1,1,0
+access_hotel_service_request_manager,hotel.service.request manager,model_hotel_service_request,hotel_core.group_hotel_manager,1,1,1,1

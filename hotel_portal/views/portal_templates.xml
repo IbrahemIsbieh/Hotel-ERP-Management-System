@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============ /my home entry ============ -->
+    <template id="portal_my_home_reservations" name="Show Reservations"
+              customize_show="True" inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Hotel Reservations</t>
+                <t t-set="url" t-value="'/my/reservations'"/>
+                <t t-set="text">Follow your reservations and send requests to the hotel</t>
+                <t t-set="placeholder_count" t-value="'reservation_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_menu_reservations" name="Portal layout: reservations menu entry"
+              inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'reservation'"
+                t-attf-class="breadcrumb-item #{'active' if not reservation else ''}">
+                <a t-if="reservation" href="/my/reservations">Reservations</a>
+                <t t-else="">Reservations</t>
+            </li>
+            <li t-if="reservation" class="breadcrumb-item active">
+                <t t-out="reservation.name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <!-- ============ list ============ -->
+    <template id="portal_my_reservations" name="My Reservations">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Reservations</t>
+            </t>
+
+            <div class="mb-3">
+                <a href="/my/reservations/new" class="btn btn-primary">
+                    <i class="fa fa-plus me-1"/> Book a Room
+                </a>
+            </div>
+
+            <t t-set="state_badge" t-value="{'draft': 'secondary', 'confirmed': 'info', 'checked_in': 'success', 'checked_out': 'dark', 'cancelled': 'danger'}"/>
+
+            <p t-if="not reservations" class="alert alert-info">
+                You have no reservations yet.
+            </p>
+            <t t-if="reservations" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Reservation</th>
+                        <th>Hotel</th>
+                        <th>Arrival</th>
+                        <th>Departure</th>
+                        <th class="text-center">Nights</th>
+                        <th class="text-end">Total</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="reservations" t-as="rsv">
+                        <td><a t-att-href="rsv.get_portal_url()"><t t-out="rsv.name"/></a></td>
+                        <td><span t-field="rsv.hotel_id.name"/></td>
+                        <td><span t-field="rsv.checkin_date"/></td>
+                        <td><span t-field="rsv.checkout_date"/></td>
+                        <td class="text-center"><span t-field="rsv.nights"/></td>
+                        <td class="text-end">
+                            <span t-out="rsv.amount_total"
+                                  t-options='{"widget": "monetary", "display_currency": rsv.currency_id}'/>
+                        </td>
+                        <td class="text-center">
+                            <span t-attf-class="badge text-bg-#{state_badge.get(rsv.state, 'secondary')}"
+                                  t-out="state_labels.get(rsv.state)"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <!-- ============ booking ============ -->
+    <template id="portal_reservation_new" name="Book a Room">
+        <t t-call="portal.portal_layout">
+            <t t-set="additional_title">Book a Room</t>
+            <div class="container pb-5">
+                <h3 class="mb-3">Book a Room</h3>
+
+                <div t-if="error_message" class="alert alert-danger" role="alert">
+                    <t t-out="error_message"/>
+                </div>
+
+                <form method="get" action="/my/reservations/new" class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <label class="form-label" for="hotel_id">Hotel</label>
+                        <select name="hotel_id" id="hotel_id" class="form-select" required="required">
+                            <option value="">Select...</option>
+                            <t t-foreach="hotels" t-as="h">
+                                <option t-att-value="h.id"
+                                        t-att-selected="params['hotel'] and params['hotel'].id == h.id">
+                                    <t t-out="h.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label" for="checkin">Arrival</label>
+                        <input type="date" name="checkin" id="checkin" class="form-control"
+                               required="required" t-att-min="today"
+                               t-att-value="params['checkin']"/>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label" for="checkout">Departure</label>
+                        <input type="date" name="checkout" id="checkout" class="form-control"
+                               required="required" t-att-min="today"
+                               t-att-value="params['checkout']"/>
+                    </div>
+                    <div class="col-md-1">
+                        <label class="form-label" for="adults">Adults</label>
+                        <input type="number" name="adults" id="adults" class="form-control"
+                               min="1" max="10" t-att-value="params['adults']"/>
+                    </div>
+                    <div class="col-md-1">
+                        <label class="form-label" for="children">Children</label>
+                        <input type="number" name="children" id="children" class="form-control"
+                               min="0" max="10" t-att-value="params['children']"/>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fa fa-search me-1"/> Search Availability
+                        </button>
+                    </div>
+                </form>
+
+                <t t-if="params['searched'] and not params['error']">
+                    <div t-if="not results" class="alert alert-warning">
+                        No rooms are available for these dates and number of guests.
+                        Try different dates.
+                    </div>
+                    <div class="row g-3">
+                        <div t-foreach="results" t-as="res" class="col-md-6 col-lg-4">
+                            <div class="card h-100">
+                                <img t-if="res['room_type'].image"
+                                     t-att-src="image_data_uri(res['room_type'].image)"
+                                     class="card-img-top" style="max-height:200px;object-fit:cover;"
+                                     alt="Room"/>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title" t-out="res['room_type'].name"/>
+                                    <p class="text-muted mb-1">
+                                        Up to <t t-out="res['room_type'].max_guests"/> guests
+                                    </p>
+                                    <p t-if="res['room_type'].amenity_ids" class="small mb-2">
+                                        <t t-foreach="res['room_type'].amenity_ids" t-as="am">
+                                            <span class="badge text-bg-light me-1" t-out="am.name"/>
+                                        </t>
+                                    </p>
+                                    <p class="small text-muted">
+                                        <t t-out="res['available']"/> room(s) left
+                                    </p>
+                                    <div class="mt-auto">
+                                        <div class="fs-4 fw-bold">
+                                            <span t-out="res['total']"
+                                                  t-options='{"widget": "monetary", "display_currency": params["hotel"].currency_id}'/>
+                                        </div>
+                                        <div class="small text-muted mb-2">
+                                            <t t-out="res['nights']"/> night(s) -
+                                            <span t-out="res['per_night']"
+                                                  t-options='{"widget": "monetary", "display_currency": params["hotel"].currency_id}'/>
+                                            / night
+                                        </div>
+                                        <form method="post" action="/my/reservations/book">
+                                            <input type="hidden" name="csrf_token"
+                                                   t-att-value="request.csrf_token()"/>
+                                            <input type="hidden" name="hotel_id" t-att-value="params['hotel'].id"/>
+                                            <input type="hidden" name="room_type_id" t-att-value="res['room_type'].id"/>
+                                            <input type="hidden" name="checkin" t-att-value="params['checkin']"/>
+                                            <input type="hidden" name="checkout" t-att-value="params['checkout']"/>
+                                            <input type="hidden" name="adults" t-att-value="params['adults']"/>
+                                            <input type="hidden" name="children" t-att-value="params['children']"/>
+                                            <textarea name="notes" class="form-control form-control-sm mb-2"
+                                                      rows="2" placeholder="Special requests (optional)"/>
+                                            <button type="submit" class="btn btn-success w-100">
+                                                Book Now
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============ detail ============ -->
+    <template id="portal_reservation_page" name="Reservation Portal Page">
+        <t t-call="portal.portal_layout">
+            <t t-set="state_badge" t-value="{'draft': 'secondary', 'confirmed': 'info', 'checked_in': 'success', 'checked_out': 'dark', 'cancelled': 'danger'}"/>
+
+            <div t-if="flash" class="alert alert-success" role="alert"><t t-out="flash"/></div>
+            <div t-if="error_message" class="alert alert-danger" role="alert">
+                <t t-out="error_message"/>
+            </div>
+
+            <t t-call="portal.portal_record_layout">
+                <t t-set="card_header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            Reservation <span t-out="reservation.name"/>
+                        </h5>
+                        <span t-attf-class="badge text-bg-#{state_badge.get(reservation.state, 'secondary')}"
+                              t-out="state_labels.get(reservation.state)"/>
+                    </div>
+                </t>
+                <t t-set="card_body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div><strong>Hotel:</strong> <span t-field="reservation.hotel_id.name"/></div>
+                            <div><strong>Guest:</strong> <span t-field="reservation.partner_id.name"/></div>
+                            <div><strong>Guests:</strong>
+                                <t t-out="reservation.adults"/> adult(s),
+                                <t t-out="reservation.children"/> child(ren)
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div><strong>Arrival:</strong> <span t-field="reservation.checkin_date"/></div>
+                            <div><strong>Departure:</strong> <span t-field="reservation.checkout_date"/></div>
+                            <div><strong>Nights:</strong> <span t-field="reservation.nights"/></div>
+                        </div>
+                    </div>
+
+                    <h6>Rooms</h6>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr><th>Room</th><th>Type</th><th class="text-end">Price</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="reservation.line_ids" t-as="line">
+                                <td><t t-out="line.room_id.name"/></td>
+                                <td><t t-out="line.room_type_id.name"/></td>
+                                <td class="text-end">
+                                    <span t-out="line.price_total"
+                                          t-options='{"widget": "monetary", "display_currency": reservation.currency_id}'/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <t t-if="reservation.charge_ids">
+                        <h6>Extra Charges</h6>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr><th>Date</th><th>Description</th><th class="text-end">Amount</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="reservation.charge_ids" t-as="charge">
+                                    <td><span t-field="charge.date"/></td>
+                                    <td><t t-out="charge.name"/></td>
+                                    <td class="text-end">
+                                        <span t-out="charge.subtotal"
+                                              t-options='{"widget": "monetary", "display_currency": reservation.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+
+                    <div class="row justify-content-end">
+                        <div class="col-md-5">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td>Rooms</td>
+                                    <td class="text-end">
+                                        <span t-out="reservation.amount_total"
+                                              t-options='{"widget": "monetary", "display_currency": reservation.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <tr t-if="reservation.charges_total">
+                                    <td>Extra charges</td>
+                                    <td class="text-end">
+                                        <span t-out="reservation.charges_total"
+                                              t-options='{"widget": "monetary", "display_currency": reservation.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <tr t-if="reservation.deposit_amount">
+                                    <td>Deposit (<t t-out="reservation.deposit_state"/>)</td>
+                                    <td class="text-end">
+                                        <span t-out="reservation.deposit_amount"
+                                              t-options='{"widget": "monetary", "display_currency": reservation.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <tr class="fw-bold">
+                                    <td>Total</td>
+                                    <td class="text-end">
+                                        <span t-out="reservation.grand_total"
+                                              t-options='{"widget": "monetary", "display_currency": reservation.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mb-3">
+                        <a t-if="invoice_url" t-att-href="invoice_url" class="btn btn-outline-primary">
+                            <i class="fa fa-file-text-o me-1"/> View Invoice
+                        </a>
+                        <form t-if="can_cancel" method="post"
+                              t-attf-action="/my/reservations/#{reservation.id}/cancel"
+                              onsubmit="return confirm('Cancel this reservation?');">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="access_token" t-att-value="token"/>
+                            <button type="submit" class="btn btn-outline-danger">
+                                Cancel Reservation
+                            </button>
+                        </form>
+                    </div>
+                    <p t-if="reservation.state in ('draft', 'confirmed') and not can_cancel"
+                       class="small text-muted">
+                        Online cancellation is no longer available for this reservation.
+                        Please contact the hotel.
+                    </p>
+
+                    <!-- Service requests -->
+                    <hr/>
+                    <h6>My Requests</h6>
+                    <p t-if="not reservation.service_request_ids" class="text-muted small">
+                        No requests yet.
+                    </p>
+                    <table t-if="reservation.service_request_ids" class="table table-sm">
+                        <thead>
+                            <tr><th>Reference</th><th>Type</th><th>Details</th><th>Status</th><th>Response</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="reservation.service_request_ids" t-as="req">
+                                <td><t t-out="req.name"/></td>
+                                <td><t t-out="request_types.get(req.request_type)"/></td>
+                                <td><t t-out="req.description"/></td>
+                                <td><span class="badge text-bg-secondary" t-out="req.state"/></td>
+                                <td><t t-if="req.state in ('done', 'rejected')" t-out="req.response"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <form t-if="can_request" method="post"
+                          t-attf-action="/my/reservations/#{reservation.id}/request"
+                          class="row g-2">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="access_token" t-att-value="token"/>
+                        <div class="col-md-3">
+                            <select name="request_type" class="form-select" required="required">
+                                <t t-foreach="request_types.items()" t-as="rt">
+                                    <option t-att-value="rt[0]"><t t-out="rt[1]"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-md-7">
+                            <input type="text" name="description" class="form-control"
+                                   maxlength="2000" required="required"
+                                   placeholder="Tell us what you need..."/>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Send Request</button>
+                        </div>
+                    </form>
+                </t>
+            </t>
+
+            <div id="reservation_communication" class="mt-4">
+                <h2>History</h2>
+                <t t-call="portal.message_thread">
+                    <t t-set="object" t-value="reservation"/>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>
